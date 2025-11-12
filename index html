@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Support Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen">
+      <header class="bg-white shadow sticky top-0">
+        <div class="max-w-3xl mx-auto p-4 flex justify-between items-center">
+          <h1 class="text-xl font-bold text-indigo-600">🎓 Student Support Platform</h1>
+          <nav class="space-x-3 text-sm">
+            <a href="#raise" class="hover:text-indigo-600">Raise Your Voice</a>
+            <a href="#issues" class="hover:text-indigo-600">Live Issues</a>
+            <a href="#join" class="hover:text-indigo-600">Join Us</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="max-w-3xl mx-auto p-4">
+        <section class="my-6">
+          <h2 class="text-2xl font-semibold mb-2 text-indigo-600">छात्रों की आवाज़, एक प्लेटफ़ॉर्म पर</h2>
+          <p class="text-sm text-gray-700">
+            भारत के छात्र अब अपनी academic या college-related समस्याओं को साझा कर सकते हैं और एक-दूसरे को support दे सकते हैं।
+          </p>
+        </section>
+
+        <section id="raise" class="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 class="text-lg font-semibold mb-3">Raise Your Voice</h3>
+          <form id="issueForm" class="space-y-3">
+            <input type="text" id="title" placeholder="Issue Title" class="w-full border rounded p-2" required />
+            <textarea id="desc" placeholder="Describe your issue..." rows="4" class="w-full border rounded p-2" required></textarea>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" id="anon" /> <span>Anonymous पोस्ट करें</span>
+            </label>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Submit</button>
+          </form>
+          <p id="msg" class="text-green-600 text-sm mt-2 hidden">✅ Issue दर्ज हो गया!</p>
+        </section>
+
+        <section id="issues" class="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 class="text-lg font-semibold mb-3">Live Issues</h3>
+          <div id="issueList" class="space-y-3 text-sm text-gray-700">
+            <p class="text-gray-500">अभी कोई issue नहीं है — नीचे form से पहला issue दर्ज करें!</p>
+          </div>
+        </section>
+
+        <section id="join" class="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 class="text-lg font-semibold mb-3">Join Us</h3>
+          <p class="text-sm mb-3">हमारे छात्र समुदाय में जुड़ें:</p>
+          <div class="space-x-2">
+            <a href="https://chat.whatsapp.com/" target="_blank" class="bg-green-500 text-white px-3 py-2 rounded">Join WhatsApp</a>
+            <a href="https://t.me/" target="_blank" class="bg-blue-500 text-white px-3 py-2 rounded">Join Telegram</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center text-sm text-gray-600 py-4 border-t">
+        © 2025 Student Support Platform | Created by Students 💙
+      </footer>
+    </div>
+
+    <script>
+      const form = document.getElementById('issueForm');
+      const list = document.getElementById('issueList');
+      const msg = document.getElementById('msg');
+
+      const issues = JSON.parse(localStorage.getItem('issues') || '[]');
+
+      function render() {
+        list.innerHTML = issues.length
+          ? issues
+              .map(
+                (i) =>
+                  `<div class='border p-2 rounded'><b>${i.anon ? 'Anonymous' : i.title}</b><p>${i.desc}</p><small class='text-gray-500'>${new Date(i.time).toLocaleString()}</small></div>`
+              )
+              .join('')
+          : '<p class=\"text-gray-500\">अभी कोई issue नहीं है</p>';
+      }
+
+      render();
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const desc = document.getElementById('desc').value;
+        const anon = document.getElementById('anon').checked;
+        issues.unshift({ title, desc, anon, time: Date.now() });
+        localStorage.setItem('issues', JSON.stringify(issues));
+        render();
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+        form.reset();
+      });
+    </script>
+  </body>
+</html>
